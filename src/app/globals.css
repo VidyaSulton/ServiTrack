@@ -81,3 +81,19 @@ body {
   background-color: rgba(56, 189, 248, 0.2);
   color: #f1f5f9;
 }
+
+/* ===== Toast Animation ===== */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 200ms ease-out;
+}
