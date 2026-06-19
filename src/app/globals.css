@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ===== Precision Fleet Dark — Design System Tokens ===== */
+/* ===== ServiTrack Dark — Design System Tokens ===== */
 @theme inline {
   /* Surface Colors */
   --color-surface: #0f1418;
@@ -96,4 +96,20 @@ body {
 
 .animate-slide-in-right {
   animation: slide-in-right 200ms ease-out;
+}
+
+/* ===== Modal Animation ===== */
+@keyframes modal-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-modal-in {
+  animation: modal-in 200ms ease-out;
 }

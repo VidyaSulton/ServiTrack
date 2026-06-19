@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Precision Fleet — Sistem Monitoring Servis Kendaraan",
+  title: "ServiTrack — Sistem Monitoring Servis Kendaraan",
   description:
     "Sistem monitoring servis kendaraan untuk mencatat riwayat servis, biaya perawatan, dan menghasilkan laporan bulanan/tahunan.",
 };

@@ -82,7 +82,7 @@ export default function LoginPage() {
             </svg>
           </div>
           <h1 className="text-[1.75rem] font-bold text-slate-100">
-            Precision Fleet
+            ServiTrack
           </h1>
           <p className="text-slate-400 text-sm mt-1">
             Masuk ke akun Anda untuk mengelola kendaraan

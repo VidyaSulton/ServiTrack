@@ -97,7 +97,7 @@ export default function DashboardLayout({
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-5 border-b border-outline">
           <div>
-            <h2 className="text-lg font-bold text-primary">Precision Fleet</h2>
+            <h2 className="text-lg font-bold text-primary">ServiTrack</h2>
             <p className="text-[0.6875rem] font-semibold text-slate-500 uppercase tracking-wide mt-0.5">
               Monitoring Servis
             </p>
