@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import {
@@ -219,24 +220,15 @@ export function VehicleForm({ initialData }: VehicleFormProps) {
       />
 
       {/* Row 6: Notes */}
-      <div className="w-full">
-        <label
-          htmlFor="notes"
-          className="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1.5"
-        >
-          Catatan (Opsional)
-        </label>
-        <textarea
-          id="notes"
-          rows={3}
-          placeholder="Tambahkan catatan tentang kendaraan ini..."
-          className="w-full px-3.5 py-2.5 rounded-sm text-sm text-slate-100 bg-surface-input border border-outline placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-150 resize-y min-h-[100px]"
-          {...register("notes")}
-        />
-        {errors.notes?.message && (
-          <p className="mt-1 text-xs text-rose-500">{errors.notes.message}</p>
-        )}
-      </div>
+      <Textarea
+        id="notes"
+        label="Catatan (Opsional)"
+        rows={3}
+        placeholder="Tambahkan catatan tentang kendaraan ini..."
+        error={errors.notes?.message}
+        className="min-h-[100px]"
+        {...register("notes")}
+      />
 
       {/* Actions */}
       <div className="flex items-center justify-end gap-3 pt-2">

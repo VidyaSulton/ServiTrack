@@ -14,6 +14,7 @@ import {
   formatDate,
 } from "@/lib/utils";
 import type { VehicleClient } from "@/models/vehicle";
+import type { ServiceLogClient } from "@/models/service-log";
 
 /**
  * Vehicle detail page — shows vehicle info and service log history.
@@ -27,9 +28,35 @@ export default function VehicleDetailPage({
   const { id } = use(params);
   const router = useRouter();
   const [vehicle, setVehicle] = useState<VehicleClient | null>(null);
+  const [serviceLogs, setServiceLogs] = useState<ServiceLogClient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showDelete, setShowDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const statusColors: Record<string, "success" | "warning" | "info"> = {
+    completed: "success",
+    scheduled: "warning",
+    in_progress: "info",
+  };
+
+  const statusLabels: Record<string, string> = {
+    completed: "Selesai",
+    scheduled: "Dijadwalkan",
+    in_progress: "Diproses",
+  };
+
+  const serviceTypeLabels: Record<string, string> = {
+    oil_change: "Ganti Oli",
+    tire_rotation: "Rotasi Ban",
+    brake_service: "Servis Rem",
+    engine_tune: "Tune Up Mesin",
+    transmission: "Transmisi",
+    cooling_system: "Sistem Pendingin",
+    electrical: "Kelistrikan",
+    body_repair: "Perbaikan Bodi",
+    general_checkup: "Pemeriksaan Umum",
+    other: "Lainnya",
+  };
 
   useEffect(() => {
     async function fetchVehicle() {
@@ -38,6 +65,12 @@ export default function VehicleDetailPage({
         const json = await res.json();
         if (json.success) {
           setVehicle(json.data);
+          // Fetch associated service logs
+          const resLogs = await fetch(`/api/service-logs?vehicleId=${id}`);
+          const jsonLogs = await resLogs.json();
+          if (jsonLogs.success) {
+            setServiceLogs(jsonLogs.data);
+          }
         } else {
           showToast("error", "Kendaraan tidak ditemukan");
           router.push("/vehicles");
@@ -184,7 +217,7 @@ export default function VehicleDetailPage({
         )}
       </div>
 
-      {/* Service Log History — will be populated in Phase 4 */}
+      {/* Service Log History */}
       <div className="bg-surface-card border border-outline rounded-md">
         <div className="px-5 py-4 border-b border-outline flex items-center justify-between">
           <h2 className="text-[1.375rem] font-semibold text-slate-100">
@@ -199,11 +232,46 @@ export default function VehicleDetailPage({
             </Button>
           </Link>
         </div>
-        <div className="p-5">
-          <p className="text-sm text-slate-500 text-center py-8">
-            Riwayat servis kendaraan ini akan ditampilkan di sini setelah Fase 4.
-          </p>
-        </div>
+        {serviceLogs.length === 0 ? (
+          <div className="p-5">
+            <p className="text-sm text-slate-500 text-center py-8">
+              Belum ada riwayat servis untuk kendaraan ini.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-surface-input">
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Tanggal</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Jenis Servis</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">Status</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">Odometer</th>
+                  <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Biaya</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-outline">
+                {serviceLogs.map((log) => (
+                  <tr 
+                    key={log.id} 
+                    className="hover:bg-surface-hover transition-colors cursor-pointer"
+                    onClick={() => router.push(`/service-logs/${log.id}`)}
+                  >
+                    <td className="px-5 py-4 text-sm text-slate-100">{formatDate(log.serviceDate)}</td>
+                    <td className="px-5 py-4 text-sm text-slate-100">{serviceTypeLabels[log.serviceType] ?? log.serviceType}</td>
+                    <td className="px-5 py-4 hidden sm:table-cell">
+                      <Badge variant={statusColors[log.status] ?? "default"}>
+                        {statusLabels[log.status] ?? log.status}
+                      </Badge>
+                    </td>
+                    <td className="px-5 py-4 text-sm text-slate-400 hidden sm:table-cell">{log.odometer.toLocaleString()} km</td>
+                    <td className="px-5 py-4 text-sm font-medium text-slate-100 text-right">Rp {log.totalCost.toLocaleString("id-ID")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}

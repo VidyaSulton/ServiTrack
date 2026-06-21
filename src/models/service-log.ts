@@ -89,6 +89,12 @@ export interface ServiceLogClient {
   status: ServiceLogStatus;
   createdAt: string;
   updatedAt: string;
+  // Optional populated vehicle data
+  vehicle?: {
+    plateNumber: string;
+    brand: string;
+    model: string;
+  };
 }
 
 /**
@@ -112,5 +118,11 @@ export function toServiceLogClient(log: ServiceLog): ServiceLogClient {
     status: log.status,
     createdAt: log.createdAt.toISOString(),
     updatedAt: log.updatedAt.toISOString(),
+    // Map populated vehicle if it exists (from aggregation pipeline)
+    vehicle: (log as any).vehicle ? {
+      plateNumber: (log as any).vehicle.plateNumber,
+      brand: (log as any).vehicle.brand,
+      model: (log as any).vehicle.model,
+    } : undefined,
   };
 }
