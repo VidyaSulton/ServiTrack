@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import Image from "next/image";
 import { signUp } from "@/lib/auth-client";
 import { registerSchema, type RegisterFormData } from "@/lib/validations/auth";
 import { Input } from "@/components/ui/input";
@@ -64,20 +65,15 @@ export default function RegisterPage() {
       <div className="w-full max-w-[420px] bg-surface-card border border-outline rounded-lg p-8">
         {/* Logo / Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 mb-4">
-            <svg
-              className="w-6 h-6 text-primary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-              />
-            </svg>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 mb-4 overflow-hidden">
+            <Image 
+              src="/ServiTrack_Icon.webp" 
+              alt="ServiTrack Logo" 
+              width={48} 
+              height={48} 
+              className="object-cover"
+              priority
+            />
           </div>
           <h1 className="text-[1.75rem] font-bold text-slate-100">
             Buat Akun Baru
