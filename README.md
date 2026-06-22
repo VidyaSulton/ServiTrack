@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ServiTrack - Sistem Monitoring Servis Kendaraan
 
-## Getting Started
+ServiTrack adalah aplikasi berbasis web yang dirancang untuk memudahkan pemilik kendaraan maupun manajer armada (*fleet manager*) dalam melacak, mencatat, dan menganalisis riwayat servis serta pengeluaran pemeliharaan kendaraan secara terpusat. Aplikasi ini dilengkapi dengan pengingat jadwal servis otomatis dan analitik pengeluaran yang divisualisasikan melalui grafik interaktif.
 
-First, run the development server:
+## 🧠 Konsep & Korelasi dengan NoSQL (MongoDB)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Aplikasi ini sangat mengandalkan kekuatan **MongoDB (NoSQL)** sebagai tulang punggung penyimpanan datanya, dan secara sengaja menggunakan **Native MongoDB Driver** (tanpa ODM seperti Mongoose) demi fleksibilitas dan performa maksimal. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Beberapa korelasi utama mengapa arsitektur NoSQL sangat cocok untuk ServiTrack:
+- **Fleksibilitas Skema (Schema Flexibility):** Riwayat servis seringkali memiliki detail *item* yang dinamis (seperti penggantian *sparepart*, biaya layanan, cairan, dll). MongoDB mampu menyimpan rincian item servis (`serviceItems`) sebagai *nested documents* (dokumen bersarang) dalam satu entitas `ServiceLog` tanpa harus membuat skema relasi tabel yang rumit (seperti *junction tables* di SQL).
+- **Performa Aggregation Pipeline:** Fitur analitik dan metrik pada Dashboard (seperti menghitung total biaya per bulan, rasio jenis servis, dan menghitung jumlah kendaraan) semuanya diselesaikan di level *database engine* menggunakan *MongoDB Aggregation Pipeline*. Hal ini drastis menghemat *memory* di server Node.js dan menjamin eksekusi yang super cepat.
+- **Keamanan Isolasi Data (Multi-Tenant Ready):** Desain indeks MongoDB memungkinkan pemisahan entitas kepemilikan antar-pengguna (`userId`) dengan sangat kuat, sehingga mencegah celah IDOR secara arsitektural.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Aplikasi ini dibangun menggunakan tumpukan teknologi modern:
+- **Framework:** Next.js 16 (App Router)
+- **Database:** MongoDB (dengan MongoDB Native Driver)
+- **Authentication:** Better Auth
+- **Styling:** Tailwind CSS v4 & UI Components (Radix UI)
+- **Validation:** Zod v4 & React Hook Form
+- **Data Visualization:** Recharts
+- **Exporting Tools:** XLSX (Excel) & PDFMake (PDF)
 
-## Learn More
+## 🚀 Proses Setup (Instalasi Singkat)
 
-To learn more about Next.js, take a look at the following resources:
+Ikuti langkah-langkah di bawah ini untuk menjalankan ServiTrack di mesin lokal Anda:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/VidyaSulton/ServiTrack.git
+   cd sistem-monitoring-servis
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Instalasi Dependencies**
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. **Konfigurasi Environment**
+   Buat file `.env.local` di root direktori proyek, dan isi dengan variabel berikut:
+   ```env
+   # Koneksi Database
+   MONGODB_URI="mongodb+srv://<username>:<password>@cluster.mongodb.net/servitrack"
+   
+   # Konfigurasi Better Auth
+   BETTER_AUTH_SECRET="your_random_secure_secret"
+   BETTER_AUTH_URL="http://localhost:3000"
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Jalankan Development Server**
+   ```bash
+   npm run dev
+   ```
+   Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000). Buka browser untuk melihat hasilnya!
